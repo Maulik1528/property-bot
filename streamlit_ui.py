@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_chat import message
-from ollama_call import OllamaChat
+from ollama_call_chat import OllamaChat
+from ollama_call_generate import OllamaGenerate
 from language_detect import LanguageDetector
 from information_extract import InformationExtractor
 from web_scraper import WebScraper
@@ -43,12 +44,13 @@ if "chat_history" not in st.session_state:
 
 # Initialize OllamaChat
 ollama_chat = OllamaChat()
+ollama_generate = OllamaGenerate()
 
 # Initialize LanguageDetector
 language_detector = LanguageDetector()
 
 # Initialize InformationExtractor
-information_extractor = InformationExtractor(ollama_chat)
+information_extractor = InformationExtractor(ollama_generate)
 
 # Function to handle sending message
 def send_message():
@@ -85,10 +87,7 @@ def send_message():
         # Process user input based on user type
         for detail in user_details.get(user_type, []):
             if detail not in st.session_state:
-                question = ollama_chat.get_ai_response([
-                    {"role": "system", "content": f"Generate a single and concise question to ask user for {detail} in {question_language}. Only return the question."},
-                    {"role": "user", "content": f"Generate question for {detail}."}
-                ])
+                question = ollama_generate.get_generated_content(f"Politely respond to the the user for their input {user_input} and then generate a single and concise question to ask for {detail} in {question_language}. Only return the response.")
                 st.session_state["chat_history"].append(("bot", question))
                 st.session_state[detail] = user_input
                 break

@@ -1,4 +1,4 @@
-from ollama_call import OllamaChat
+from ollama_call_chat import OllamaChat
 
 class LanguageDetector:
     def __init__(self):

@@ -1,5 +1,5 @@
 import chromadb
-from ollama_call import OllamaChat
+from ollama_call_chat import OllamaChat
 
 class RAGRetriever:
     def __init__(self):
