@@ -6,15 +6,19 @@ import chromadb
 import shutil
 import os
 import streamlit as st
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 class CSVScraper:
     def __init__(self, uploaded_file):
         self.uploaded_file = uploaded_file
         self.client, self.collection = self.init_chroma()
 
-    # Store CSV file in the ./docs directory
+    # Store CSV file in the directory specified by DOCS_PATH environment variable
     def store_csv(self):
-        docs_path = "./docs"
+        docs_path = os.getenv("DOCS_PATH", "./docs")
         if not os.path.exists(docs_path):
             os.makedirs(docs_path)
         stored_file_path = os.path.join(docs_path, self.uploaded_file.name)
@@ -37,7 +41,8 @@ class CSVScraper:
 
     # Generate embedding using Ollama local API
     def generate_embedding(self, text, model="llama3.1"):
-        url = "http://192.168.1.34:11435/api/embeddings"
+        base_url = os.getenv("OLLAMA_API_URL", "http://192.168.1.34:11435")
+        url = f"{base_url}/api/embeddings"
         payload = {
             "model": model,
             "prompt": text
@@ -62,7 +67,8 @@ class CSVScraper:
 
     # Initialize local ChromaDB
     def init_chroma(self):
-        client = chromadb.PersistentClient(path="./chroma_db")
+        chroma_db_path = os.getenv("CHROMA_DB_PATH", "./chroma_db")
+        client = chromadb.PersistentClient(path=chroma_db_path)
         collection = client.get_or_create_collection(name="csv_embeddings")
         return client, collection
 

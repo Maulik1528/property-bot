@@ -18,9 +18,3 @@ class LanguageDetector:
         # Return the detected language
         return response.strip() if response else "Unknown"
 
-# Example usage
-if __name__ == "__main__":
-    detector = LanguageDetector()
-    text = "Kem chho bhai?"
-    language = detector.detect_language(text)
-    print(f"The detected language is: {language}")
